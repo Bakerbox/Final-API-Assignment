@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\game.h" />
+    <ClInclude Include="Source\MathTools.h" />
     <ClInclude Include="Source\Resources.h" />
     <ClInclude Include="TextureResource.h" />
   </ItemGroup>

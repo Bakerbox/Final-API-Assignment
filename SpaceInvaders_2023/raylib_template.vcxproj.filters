@@ -35,5 +35,8 @@
     <ClInclude Include="TextureResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\MathTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
