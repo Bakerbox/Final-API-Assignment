@@ -1,15 +1,18 @@
 #pragma once
-#include "raylib.h"
-#include "vector"
+#include <vector>
+#include <memory>
+#include <raylib.h>
 
-struct Resources 
-{
-	void Load();
-	//void Unload();
+class TextureResource;
 
-	std::vector<Texture2D> shipTextures;
-	Texture2D alienTexture;
-	Texture2D barrierTexture;
-	Texture2D laserTexture;
+class Resources {
+private:
+    std::unique_ptr<TextureResource> alienTexture;
+    std::unique_ptr<TextureResource> barrierTexture;
+    std::unique_ptr<TextureResource> laserTexture;
+    std::vector<std::unique_ptr<TextureResource>> shipTextures;
 
+public:
+    Resources() noexcept;
+    ~Resources() noexcept;
 };
