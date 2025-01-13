@@ -45,8 +45,8 @@ void Game::Start()
 		Walls.push_back(newWalls); 
 
 	}
-
-
+	
+	
 	//creating player
 	Player newPlayer;
 	player = newPlayer;
@@ -85,12 +85,7 @@ void Game::Continue()
 	gameState = State::STARTSCREEN;
 }
 
-//TODO:: Make this part of RAII so that it creates them in game constructor.
-void Game::Launch()
-{
-	//LOAD SOME RESOURCES HERE
-	resources.Load();
-}
+
 
 void Game::Update()
 {
@@ -370,24 +365,24 @@ void Game::Render()
 		DrawText(TextFormat("Lives: %i", player.lives), 50, 70, 40, YELLOW);
 
 		//player rendering 
-		player.Render(resources.shipTextures[player.activeTexture]);
+		player.Render(resources.shipTextures[player.activeTexture]->get());
 
 		//projectile rendering
 		for (int i = 0; i < Projectiles.size(); i++)
 		{
-			Projectiles[i].Render(resources.laserTexture);
+			Projectiles[i].Render(resources.laserTexture->get());
 		}
 
 		// wall rendering 
 		for (int i = 0; i < Walls.size(); i++)
 		{
-			Walls[i].Render(resources.barrierTexture); 
+			Walls[i].Render(resources.barrierTexture->get()); 
 		}
 
 		//alien rendering  
 		for (int i = 0; i < Aliens.size(); i++)
 		{
-			Aliens[i].Render(resources.alienTexture);
+			Aliens[i].Render(resources.alienTexture->get());
 		}
 
 
@@ -685,7 +680,7 @@ void Player::Update()
 	
 }
 
-void Player::Render(Texture2D texture) 
+void Player::Render(Texture2D texture)
 {
 	float window_height = GetScreenHeight(); 
 
@@ -805,7 +800,7 @@ void Alien::Update()
 	}
 }
 
-void Alien::Render(Texture2D texture) 
+void Alien::Render(Texture2D texture)
 {
 	//DrawRectangle((int)position.x - 25, (int)position.y, 30, 30, RED);
 	//DrawCircle((int)position.x, (int)position.y, radius, GREEN);
