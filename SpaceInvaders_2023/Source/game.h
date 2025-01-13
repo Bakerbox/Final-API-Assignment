@@ -1,7 +1,8 @@
 #pragma once
 #include "raylib.h"
-#include <vector>
 #include "Resources.h"
+#include "MathTools.h"
+#include <vector>
 #include <string>
 
 

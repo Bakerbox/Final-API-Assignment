@@ -5,7 +5,6 @@
 #include <fstream>
 
 
-
 //TODO:: Shouldn't need two-step init, can just be called in the constructor when making a game instance.
 void Game::Start()
 {
@@ -138,7 +137,6 @@ void Game::Update()
 					if (CheckCollision(Aliens[a].position, Aliens[a].radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
 					{
 						// Kill!
-						std::cout << "Hit! \n";
 						// Set them as inactive, will be killed later
 						Projectiles[i].active = false;
 						Aliens[a].active = false;
@@ -154,7 +152,6 @@ void Game::Update()
 				{
 					if (CheckCollision({player.x_pos, GetScreenHeight() - player.player_base_height }, player.radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
 					{
-						std::cout << "dead!\n"; 
 						Projectiles[i].active = false; 
 						player.lives -= 1; 
 					}
@@ -166,8 +163,7 @@ void Game::Update()
 			{
 				if (CheckCollision(Walls[b].position, Walls[b].radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
 				{
-					// Kill!
-					std::cout << "Hit! \n";
+;
 					// Set them as inactive, will be killed later
 					Projectiles[i].active = false;
 					Walls[b].health -= 1;
@@ -463,8 +459,6 @@ void Game::SpawnAliens()
 			newAlien.position.x = formationX + 450 + (col * alienSpacing);
 			newAlien.position.y = formationY + (row * alienSpacing);
 			Aliens.push_back(newAlien);
-			std::cout << "Find Alien -X:" << newAlien.position.x << std::endl;
-			std::cout << "Find Alien -Y:" << newAlien.position.y << std::endl;
 		}
 	}
 
@@ -499,44 +493,6 @@ void Game::InsertNewHighScore(std::string name)
 
 		}
 	}
-}
-//TODO:: Remove
-void Game::LoadLeaderboard()
-{
-	// CLEAR LEADERBOARD
-
-	// OPEN FILE
-
-	// READ DATA
-
-	// WRITE DATA ONTO LEADERBOARD
-
-	//CLOSE FILE
-}
-//TODO:: Remove
-void Game::SaveLeaderboard()
-{
-	// SAVE LEADERBOARD AS ARRAY
-
-	// OPEN FILE
-	std::fstream file;
-
-	file.open("Leaderboard");
-
-	if (!file)
-	{
-		std::cout << "file not found \n";
-
-	}
-	else
-	{
-		std::cout << "file found \n";
-	}
-	// CLEAR FILE
-
-	// WRITE ARRAY DATA INTO FILE
-
-	// CLOSE FILE
 }
 
 
@@ -610,7 +566,6 @@ void Player::Initialize()
 	
 	float window_width = (float)GetScreenWidth();
 	x_pos = window_width / 2;
-	std::cout<< "Find Player -X:" << GetScreenWidth() / 2 << "Find Player -Y" << GetScreenHeight() - player_base_height << std::endl;
 
 }
 
