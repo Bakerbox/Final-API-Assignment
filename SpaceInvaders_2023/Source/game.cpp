@@ -7,6 +7,7 @@
 
 
 // MATH FUNCTIONS
+//TODO::Move math Functions out somewhere else, in a header we can make use of, let game.cpp only has the single responsibility of facilitating the game.
 float lineLength(Vector2 A, Vector2 B) //Uses pythagoras to calculate the length of a line
 {
 	float length = sqrtf(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
@@ -28,7 +29,7 @@ bool pointInCircle(Vector2 circlePos, float radius, Vector2 point) // Uses pytha
 	}
 }
 
-
+//TODO:: Shouldn't need two-step init, can just be called in the constructor when making a game instance.
 void Game::Start()
 {
 	// creating walls 
@@ -77,12 +78,14 @@ void Game::End()
 	gameState = State::ENDSCREEN;
 }
 
+//TODO:: This is unused since leaderboard is never implemented. Can be removed.
 void Game::Continue()
 {
 	SaveLeaderboard();
 	gameState = State::STARTSCREEN;
 }
 
+//TODO:: Make this part of RAII so that it creates them in game constructor.
 void Game::Launch()
 {
 	//LOAD SOME RESOURCES HERE
@@ -98,8 +101,6 @@ void Game::Update()
 		if (IsKeyReleased(KEY_SPACE))
 		{
 			Start();
-
-
 		}
 
 		break;
@@ -267,7 +268,7 @@ void Game::Update()
 	break;
 	case State::ENDSCREEN:
 		//Code
-	
+	//TODO:: No highscore implemented so remove this.
 		//Exit endscreen
 		if (IsKeyReleased(KEY_ENTER) && !newHighScore)
 		{

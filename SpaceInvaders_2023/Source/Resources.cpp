@@ -1,6 +1,6 @@
 #include "Resources.h"
 #include <iostream>;
-
+//TODO:: make this RAII
 void Resources::Load()
 {
 	std::cout << "Yay"; // yes
@@ -11,10 +11,3 @@ void Resources::Load()
 	shipTextures.push_back(LoadTexture("./Assets/Ship3.png"));
 	laserTexture = LoadTexture("./Assets/Laser.png");
 }
-/*
-void Resources::Unload()
-{
-	UnloadTexture(barrierTexture);
-	UnloadTexture(alienTexture);
-}
-*/

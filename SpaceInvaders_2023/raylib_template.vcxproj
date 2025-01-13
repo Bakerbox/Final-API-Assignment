@@ -83,6 +83,8 @@
     <LibraryPath>$(SolutionDir)External\raylib\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)External\raylib\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <IntDir>Build\Intermediate\$(Configuration)\</IntDir>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
@@ -130,7 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -164,7 +166,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="level.cpp" />
-    <ClCompile Include="Source\game.cpp" />
+    <ClCompile Include="Source\game.cpp">
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
+    </ClCompile>
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Resources.cpp" />
   </ItemGroup>

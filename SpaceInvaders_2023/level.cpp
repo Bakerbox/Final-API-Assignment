@@ -3,7 +3,7 @@
 #include <vector> 
 #include <string>
 #include "level.h"
-
+//TODO:: Not used anywhere and thus useless, level.cpp should be used for more.
 void LoadLevelFromFile(const std::string& filename) 
 {
 	std::ifstream file(filename); 
