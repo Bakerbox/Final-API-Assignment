@@ -1,10 +1,4 @@
 #include "Resources.h"
-#include <iostream>
-#include <vector>
-#include <memory> 
-
-
-
 
 Resources::Resources() noexcept
     : alienTexture(std::make_unique<TextureResource>("./Assets/Alien.png")),
