@@ -165,7 +165,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="level.cpp" />
     <ClCompile Include="Source\game.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -173,7 +172,6 @@
     <ClCompile Include="Source\Resources.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="level.h" />
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\Resources.h" />
     <ClInclude Include="TextureResource.h" />
