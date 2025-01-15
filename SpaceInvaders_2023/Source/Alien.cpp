@@ -36,3 +36,4 @@ void Alien::Render(Texture2D texture) const
 		0,
 		WHITE);
 }
+

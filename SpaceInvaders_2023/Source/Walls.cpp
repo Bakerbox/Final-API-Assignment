@@ -19,3 +19,4 @@ void Wall::Render(Texture2D texture) const {
         DrawText(TextFormat("%i", health), position.x - 10, position.y - 10, 20, RED);
     }
 }
+

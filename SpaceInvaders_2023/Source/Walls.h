@@ -14,5 +14,6 @@ public:
     void Update() override;
     void Render(Texture2D texture) const override;
     bool IsDestroyed() const noexcept { return health <= 0; }
-    void TakeDamage() { if (health > 0) health--; }
+    void TakeDamage() noexcept { if (health > 0) health--; }
+
 };

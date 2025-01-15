@@ -42,6 +42,12 @@
     <ClCompile Include="Source\Alien.cpp">
       <Filter>Source Files\Entity and subclasses</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Star.cpp">
+      <Filter>Source Files\Entity and subclasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Background.cpp">
+      <Filter>Source Files\Entity and subclasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Resources.h">
@@ -70,6 +76,15 @@
     </ClInclude>
     <ClInclude Include="Source\Projectile.h">
       <Filter>Header Files\Entity and subclasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Background.h">
+      <Filter>Header Files\Entity and subclasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Star.h">
+      <Filter>Header Files\Entity and subclasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Collisions.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

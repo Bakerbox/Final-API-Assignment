@@ -15,6 +15,7 @@ public:
         radius = 50; 
         float const window_width = GetScreenWidth();
         position.x = window_width / 2;
+        position.y = GetScreenHeight() - 50;
     }
 
      float GetPlayerBaseHeight() noexcept { return player_base_height; }

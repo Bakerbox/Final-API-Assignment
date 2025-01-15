@@ -18,4 +18,5 @@ public:
     void SetActive(bool set) noexcept { active = set; }
     void Update() override;
     void Render(Texture2D texture) const override;
+    
 };

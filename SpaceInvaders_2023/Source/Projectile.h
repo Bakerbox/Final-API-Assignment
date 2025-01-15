@@ -1,5 +1,6 @@
 #pragma once 
 #include "Entity.h"
+
 #define alienOffset 40
 class Projectile : public Entity
 {
@@ -19,9 +20,9 @@ public:
 	}
 	
 	EntityType GetType() noexcept { return type; }
-	Vector2 GetLineStart() noexcept { return lineStart; }
-	Vector2 GetLineEnd() noexcept { return lineEnd; }
-	bool GetActive() noexcept { return active; }
+	Vector2  GetLineStart() const noexcept { return lineStart; }
+	Vector2  GetLineEnd() const noexcept { return lineEnd; }
+	bool const GetActive() noexcept { return active; }
 	void SetActive(bool set) noexcept { active = set; }
 	void InverseSpeed() noexcept { speed = -speed; }
 	void OffsetEnemyProjectile() noexcept { position.y += alienOffset; };
