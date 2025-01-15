@@ -140,6 +140,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -165,27 +166,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Alien.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="Source\Entity.cpp" />
+    <ClCompile Include="Source\Alien.cpp" />
     <ClCompile Include="Source\game.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
     </ClCompile>
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\Resources.cpp" />
-    <ClCompile Include="Walls.cpp" />
+    <ClCompile Include="Source\Walls.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Alien.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Source\Alien.h" />
     <ClInclude Include="Source\Entity.h" />
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\MathTools.h" />
+    <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\Resources.h" />
     <ClInclude Include="Source\TextureResource.h" />
-    <ClInclude Include="Walls.h" />
+    <ClInclude Include="Source\Walls.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

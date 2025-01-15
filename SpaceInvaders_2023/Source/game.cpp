@@ -1,27 +1,20 @@
 #include "game.h"
 #include <vector>
 #include <chrono>
-#include <thread>
-#include <fstream>
-
-
+#define WallDistance 250.0f
 //TODO:: Shouldn't need two-step init, can just be called in the constructor when making a game instance.
 void Game::Start()
 {
-	float wall_distance = static_cast<float>(GetScreenWidth()) / (wallCount + 1);
+	float wall_Y = static_cast<float>(GetScreenHeight()) - WallDistance;
+	float wall_Distance = static_cast<float>(GetScreenWidth()) / (wallCount + 1);
+
 	for (int i = 0; i < wallCount; i++)
 	{
-		Wall newWalls;
-		newWalls.position.y = static_cast<float>(GetScreenHeight()) - 250;
-		newWalls.position.x = wall_distance * (i + 1); 
-		Walls.push_back(newWalls); 
+		Wall newWall({wall_Distance * (i + 1),wall_Y});
+		Walls.push_back(newWall); 
 	}
-	
-	
-	//creating player
-	Player newPlayer;
-	player = newPlayer;
-	player.Initialize();
+	player = Player();
+
 
 	//creating aliens
 	SpawnAliens();
@@ -52,7 +45,6 @@ void Game::End()
 //TODO:: This is unused since leaderboard is never implemented. Can be removed.
 void Game::Continue()
 {
-	SaveLeaderboard();
 	gameState = State::STARTSCREEN;
 }
 
@@ -79,20 +71,20 @@ void Game::Update()
 
 		//Update Player
 		player.Update();
-		
+
 		//Update Aliens and Check if they are past player
 		for (int i = 0; i < Aliens.size(); i++)
 		{
-			Aliens[i].Update(); 
+			Aliens[i].Update();
 
-			if (Aliens[i].position.y > GetScreenHeight() - player.player_base_height)
+			if (Aliens[i].position.y > GetScreenHeight() - player.GetPlayerBaseHeight())
 			{
 				End();
 			}
 		}
 
 		//End game if player dies
-		if (player.lives < 1)
+		if (player.GetLives() < 1)
 		{
 			End();
 		}
@@ -105,9 +97,8 @@ void Game::Update()
 
 
 		// Update background with offset
-		playerPos = { player.x_pos, (float)player.player_base_height };
-		cornerPos = { 0, (float)player.player_base_height };
-		offset = lineLength(playerPos, cornerPos) * -1;
+		cornerPos = { 0, player.GetPlayerBaseHeight() };
+		offset = lineLength(player.GetPosition(), cornerPos) * -1;
 		background.Update(offset / 15);
 
 
@@ -145,10 +136,10 @@ void Game::Update()
 			{
 				if (Projectiles[i].type == EntityType::ENEMY_PROJECTILE)
 				{
-					if (CheckCollision({player.x_pos, GetScreenHeight() - player.player_base_height }, player.radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
+					if (CheckCollision({ player.GetXPosition(), GetScreenHeight() - player.GetPlayerBaseHeight() }, player.GetRadius(), Projectiles[i].lineStart, Projectiles[i].lineEnd))
 					{
-						Projectiles[i].active = false; 
-						player.lives -= 1; 
+						Projectiles[i].active = false;
+						player.DecreaseLife();
 					}
 				}
 			}
@@ -156,12 +147,12 @@ void Game::Update()
 
 			for (int b = 0; b < Walls.size(); b++)
 			{
-				if (CheckCollision(Walls[b].position, Walls[b].radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
+				if (CheckCollision(Walls[b].GetPosition(), Walls[b].GetRadius(), Projectiles[i].lineStart, Projectiles[i].lineEnd))
 				{
-;
+					;
 					// Set them as inactive, will be killed later
 					Projectiles[i].active = false;
-					Walls[b].health -= 1;
+					Walls[b].TakeDamage();
 				}
 			}
 		}
@@ -171,7 +162,7 @@ void Game::Update()
 		{
 			float window_height = (float)GetScreenHeight();
 			Projectile newProjectile;
-			newProjectile.position.x = player.x_pos;
+			newProjectile.position.x = player.GetXPosition();
 			newProjectile.position.y = window_height - 130;
 			newProjectile.type = EntityType::PLAYER_PROJECTILE;
 			Projectiles.push_back(newProjectile);
@@ -216,16 +207,12 @@ void Game::Update()
 				i--;
 			}
 		}
-		for (int i = 0; i < Walls.size(); i++)
-		{
-			if (Walls[i].active == false)
-			{
-				Walls.erase(Walls.begin() + i);
-				i--;
-			}
-		}
+	//	std::erase_if(Projectiles, [](Projectile& projectile) noexcept { return !projectile.GetActive(); });
+		//std::erase_if(Aliens, [](Alien& alien) noexcept { return !alien.GetActive(); });
+		std::erase_if(Walls, [](Wall& wall) noexcept { return !wall.GetActive(); });
 
-			
+
+	
 		
 
 	break;
@@ -330,10 +317,10 @@ void Game::Render()
 
 		//DrawText("GAMEPLAY", 50, 30, 40, YELLOW);
 		DrawText(TextFormat("Score: %i", score), 50, 20, 40, YELLOW);
-		DrawText(TextFormat("Lives: %i", player.lives), 50, 70, 40, YELLOW);
+		DrawText(TextFormat("Lives: %i", player.GetLives()), 50, 70, 40, YELLOW);
 
 		//player rendering 
-		player.Render(resources.shipTextures[player.activeTexture]->get());
+		player.Render(resources.shipTextures[player.GetTextureFrame()]->get());
 
 		//projectile rendering
 		for (int i = 0; i < Projectiles.size(); i++)
@@ -555,77 +542,7 @@ bool Game::CheckCollision(Vector2 circlePos, float circleRadius, Vector2 lineSta
 	}
 
 }
-//TODO:: Shouldnt need an init function, just put in constructor.
-void Player::Initialize() 
-{
-	
-	float window_width = (float)GetScreenWidth();
-	x_pos = window_width / 2;
 
-}
-
-void Player::Update() 
-{
-
-	//Movement
-	direction = 0;
-	if (IsKeyDown(KEY_LEFT))
-	{
-		direction--;
-	}
-	if (IsKeyDown(KEY_RIGHT))
-	{
-		direction++;
-	}
-
-	x_pos += speed * direction;
-
-	if (x_pos < 0 + radius)
-	{
-		x_pos = 0 + radius;
-	}
-	else if (x_pos > GetScreenWidth() - radius)
-	{
-		x_pos = GetScreenWidth() - radius;
-	}
-
-
-	//Determine frame for animation
-	timer += GetFrameTime();
-
-	if (timer > 0.4 && activeTexture == 2)
-	{
-		activeTexture = 0;
-		timer = 0;
-	}
-	else if (timer > 0.4)
-	{
-		activeTexture++;
-		timer = 0;
-	}
-
-	
-}
-
-void Player::Render(Texture2D texture)
-{
-	float window_height = GetScreenHeight(); 
-
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			352,
-			352,
-		},
-		{
-			x_pos, window_height - player_base_height,
-			100,
-			100,
-		}, { 50, 50 },
-		0,
-		WHITE);
-}
 
 
 
@@ -666,40 +583,9 @@ void Projectile::Render(Texture2D texture)
 		WHITE);
 }
 
-void Wall::Render(Texture2D texture)
-{
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			704,
-			704,
-		},
-		{
-			position.x,
-			position.y,
-			200,
-			200,
-		}, { 100 , 100 },
-		0,
-		WHITE);
 
 
-	DrawText(TextFormat("%i", health), position.x-21, position.y+10, 40, RED);
-	
-}
 
-void Wall::Update() 
-{
-
-	// set walls as inactive when out of health
-	if (health < 1)
-	{
-		active = false;
-	}
-
-
-}
 
 void Alien::Update() 
 {

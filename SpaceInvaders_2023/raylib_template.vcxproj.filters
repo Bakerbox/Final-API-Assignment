@@ -30,26 +30,20 @@
     <ClCompile Include="Source\Resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Alien.cpp">
+    <ClCompile Include="Source\Player.cpp">
       <Filter>Source Files\Entity and subclasses</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entity.cpp">
+    <ClCompile Include="Source\Walls.cpp">
       <Filter>Source Files\Entity and subclasses</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Source\Projectile.cpp">
       <Filter>Source Files\Entity and subclasses</Filter>
     </ClCompile>
-    <ClCompile Include="Projectile.cpp">
-      <Filter>Source Files\Entity and subclasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Walls.cpp">
+    <ClCompile Include="Source\Alien.cpp">
       <Filter>Source Files\Entity and subclasses</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -59,19 +53,22 @@
     <ClInclude Include="Source\TextureResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Alien.h">
-      <Filter>Header Files\Entity and subclasses</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Entity.h">
       <Filter>Header Files\Entity and subclasses</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Source\game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Walls.h">
       <Filter>Header Files\Entity and subclasses</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
+    <ClInclude Include="Source\Alien.h">
       <Filter>Header Files\Entity and subclasses</Filter>
     </ClInclude>
-    <ClInclude Include="Walls.h">
+    <ClInclude Include="Source\Player.h">
+      <Filter>Header Files\Entity and subclasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Projectile.h">
       <Filter>Header Files\Entity and subclasses</Filter>
     </ClInclude>
   </ItemGroup>
