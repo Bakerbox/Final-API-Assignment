@@ -8,18 +8,13 @@
 //TODO:: Shouldn't need two-step init, can just be called in the constructor when making a game instance.
 void Game::Start()
 {
-	// creating walls 
-	float window_width = (float)GetScreenWidth(); 
-	float window_height = (float)GetScreenHeight(); 
-	float wall_distance = window_width / (wallCount + 1); 
+	float wall_distance = static_cast<float>(GetScreenWidth()) / (wallCount + 1);
 	for (int i = 0; i < wallCount; i++)
 	{
 		Wall newWalls;
-		newWalls.position.y = window_height - 250; 
+		newWalls.position.y = static_cast<float>(GetScreenHeight()) - 250;
 		newWalls.position.x = wall_distance * (i + 1); 
-
 		Walls.push_back(newWalls); 
-
 	}
 	
 	

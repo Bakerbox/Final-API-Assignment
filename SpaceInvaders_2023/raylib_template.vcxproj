@@ -165,17 +165,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Alien.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\game.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpplatest</LanguageStandard>
     </ClCompile>
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Resources.cpp" />
+    <ClCompile Include="Walls.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alien.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Source\Entity.h" />
     <ClInclude Include="Source\game.h" />
     <ClInclude Include="Source\MathTools.h" />
     <ClInclude Include="Source\Resources.h" />
-    <ClInclude Include="TextureResource.h" />
+    <ClInclude Include="Source\TextureResource.h" />
+    <ClInclude Include="Walls.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
