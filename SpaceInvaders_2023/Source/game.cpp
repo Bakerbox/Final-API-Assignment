@@ -2,6 +2,8 @@
 #include <vector>
 #include <chrono>
 #define WallDistance 250.0f
+#define AlienDistance 450.0f
+#define ProjectileDistance 130.0f
 //TODO:: Shouldn't need two-step init, can just be called in the constructor when making a game instance.
 void Game::Start()
 {
@@ -72,12 +74,10 @@ void Game::Update()
 		//Update Player
 		player.Update();
 
-		//Update Aliens and Check if they are past player
-		for (int i = 0; i < Aliens.size(); i++)
+		for (Alien& alien : Aliens)
 		{
-			Aliens[i].Update();
-
-			if (Aliens[i].position.y > GetScreenHeight() - player.GetPlayerBaseHeight())
+			alien.Update();
+			if (alien.GetYPosition() > GetScreenHeight() - player.GetPlayerBaseHeight())
 			{
 				End();
 			}
@@ -107,25 +107,24 @@ void Game::Update()
 		{
 			Projectiles[i].Update();
 		}
-		//UPDATE PROJECTILE
-		for (int i = 0; i < Walls.size(); i++)
+		for (Wall& wall : Walls)
 		{
-			Walls[i].Update();
+			wall.Update();
 		}
 
 		//CHECK ALL COLLISONS HERE
 		for (int i = 0; i < Projectiles.size(); i++)
 		{
-			if (Projectiles[i].type == EntityType::PLAYER_PROJECTILE)
+			if (Projectiles[i].GetType() == EntityType::PLAYER_PROJECTILE)
 			{
 				for (int a = 0; a < Aliens.size(); a++)
 				{
-					if (CheckCollision(Aliens[a].position, Aliens[a].radius, Projectiles[i].lineStart, Projectiles[i].lineEnd))
+					if (CheckCollision(Aliens[a].GetPosition(), Aliens[a].GetRadius(), Projectiles[i].GetLineStart(), Projectiles[i].GetLineEnd()))
 					{
 						// Kill!
 						// Set them as inactive, will be killed later
-						Projectiles[i].active = false;
-						Aliens[a].active = false;
+						Projectiles[i].SetActive(false);
+						Aliens[a].SetActive(false);
 						score += 100;
 					}
 				}
@@ -134,11 +133,11 @@ void Game::Update()
 			//ENEMY PROJECTILES HERE
 			for (int i = 0; i < Projectiles.size(); i++)
 			{
-				if (Projectiles[i].type == EntityType::ENEMY_PROJECTILE)
+				if (Projectiles[i].GetType() == EntityType::ENEMY_PROJECTILE)
 				{
-					if (CheckCollision({ player.GetXPosition(), GetScreenHeight() - player.GetPlayerBaseHeight() }, player.GetRadius(), Projectiles[i].lineStart, Projectiles[i].lineEnd))
+					if (CheckCollision({ player.GetXPosition(), GetScreenHeight() - player.GetPlayerBaseHeight() }, player.GetRadius(), Projectiles[i].GetLineStart(), Projectiles[i].GetLineEnd()))
 					{
-						Projectiles[i].active = false;
+						Projectiles[i].SetActive(false);
 						player.DecreaseLife();
 					}
 				}
@@ -147,11 +146,11 @@ void Game::Update()
 
 			for (int b = 0; b < Walls.size(); b++)
 			{
-				if (CheckCollision(Walls[b].GetPosition(), Walls[b].GetRadius(), Projectiles[i].lineStart, Projectiles[i].lineEnd))
+				if (CheckCollision(Walls[b].GetPosition(), Walls[b].GetRadius(), Projectiles[i].GetLineStart(), Projectiles[i].GetLineEnd()))
 				{
 					;
 					// Set them as inactive, will be killed later
-					Projectiles[i].active = false;
+					Projectiles[i].SetActive(false);
 					Walls[b].TakeDamage();
 				}
 			}
@@ -160,11 +159,7 @@ void Game::Update()
 		//MAKE PROJECTILE
 		if (IsKeyPressed(KEY_SPACE))
 		{
-			float window_height = (float)GetScreenHeight();
-			Projectile newProjectile;
-			newProjectile.position.x = player.GetXPosition();
-			newProjectile.position.y = window_height - 130;
-			newProjectile.type = EntityType::PLAYER_PROJECTILE;
+			Projectile newProjectile({ player.GetXPosition(),static_cast<float>(GetScreenHeight()) - ProjectileDistance}, EntityType::PLAYER_PROJECTILE);
 			Projectiles.push_back(newProjectile);
 		}
 
@@ -179,41 +174,16 @@ void Game::Update()
 				randomAlienIndex = rand() % Aliens.size();
 			}
 
-			Projectile newProjectile;
-			newProjectile.position = Aliens[randomAlienIndex].position;
-			newProjectile.position.y += 40;
-			newProjectile.speed = -15;
-			newProjectile.type = EntityType::ENEMY_PROJECTILE;
+			Projectile newProjectile(Aliens[randomAlienIndex].GetPosition(),EntityType::ENEMY_PROJECTILE);
+			newProjectile.OffsetEnemyProjectile();
+			newProjectile.InverseSpeed();
 			Projectiles.push_back(newProjectile);
 			shootTimer = 0;
 		}
 
-		// REMOVE INACTIVE/DEAD ENITITIES
-		for (int i = 0; i < Projectiles.size(); i++)
-		{
-			if (Projectiles[i].active == false)
-			{
-				Projectiles.erase(Projectiles.begin() + i);
-				// Prevent the loop from skipping an instance because of index changes, since all insances after
-				// the killed objects are moved down in index. This is the same for all loops with similar function
-				i--;
-			}
-		}
-		for (int i = 0; i < Aliens.size(); i++)
-		{
-			if (Aliens[i].active == false)
-			{
-				Aliens.erase(Aliens.begin() + i);
-				i--;
-			}
-		}
-	//	std::erase_if(Projectiles, [](Projectile& projectile) noexcept { return !projectile.GetActive(); });
-		//std::erase_if(Aliens, [](Alien& alien) noexcept { return !alien.GetActive(); });
+		std::erase_if(Projectiles, [](Projectile& projectile) noexcept { return !projectile.GetActive(); });
+		std::erase_if(Aliens, [](Alien& alien) noexcept { return !alien.GetActive(); });
 		std::erase_if(Walls, [](Wall& wall) noexcept { return !wall.GetActive(); });
-
-
-	
-		
 
 	break;
 	case State::ENDSCREEN:
@@ -335,9 +305,9 @@ void Game::Render()
 		}
 
 		//alien rendering  
-		for (int i = 0; i < Aliens.size(); i++)
+		for (Alien alien : Aliens)
 		{
-			Aliens[i].Render(resources.alienTexture->get());
+			alien.Render(resources.alienTexture->get());
 		}
 
 
@@ -436,10 +406,7 @@ void Game::SpawnAliens()
 {
 	for (int row = 0; row < formationHeight; row++) {
 		for (int col = 0; col < formationWidth; col++) {
-			Alien newAlien = Alien();
-			newAlien.active = true;
-			newAlien.position.x = formationX + 450 + (col * alienSpacing);
-			newAlien.position.y = formationY + (row * alienSpacing);
+			Alien newAlien = Alien( { formationX + AlienDistance + (col * alienSpacing), static_cast<float>(formationY + (row * alienSpacing)) });
 			Aliens.push_back(newAlien);
 		}
 	}
@@ -544,98 +511,6 @@ bool Game::CheckCollision(Vector2 circlePos, float circleRadius, Vector2 lineSta
 }
 
 
-
-
-void Projectile::Update()
-{
-	position.y -= speed;
-
-	// UPDATE LINE POSITION
-	lineStart.y = position.y - 15;
-	lineEnd.y   = position.y + 15;
-
-	lineStart.x = position.x;
-	lineEnd.x   = position.x;
-
-	if (position.y < 0 || position.y > 1500)
-	{
-		active = false;
-	}
-}
-
-void Projectile::Render(Texture2D texture)
-{
-	//DrawCircle((int)position.x, (int)position.y, 10, RED);
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			176,
-			176,
-		},
-		{
-			position.x,
-			position.y,
-			50,
-			50,
-		}, { 25 , 25 },
-		0,
-		WHITE);
-}
-
-
-
-
-
-void Alien::Update() 
-{
-	int window_width = GetScreenWidth(); 
-
-	if (moveRight)
-	{
-		position.x += speed; 
-
-		if (position.x >= GetScreenWidth())
-		{
-			moveRight = false; 
-			position.y += 50; 
-		}
-	}
-	else 
-	{
-		position.x -= speed; 
-
-		if (position.x <= 0)
-		{
-			moveRight = true; 
-			position.y += 50; 
-		}
-	}
-}
-
-void Alien::Render(Texture2D texture)
-{
-	//DrawRectangle((int)position.x - 25, (int)position.y, 30, 30, RED);
-	//DrawCircle((int)position.x, (int)position.y, radius, GREEN);
-	
-	
-
-	DrawTexturePro(texture,
-		{
-			0,
-			0,
-			352,
-			352,
-		},
-		{
-			position.x,
-			position.y,
-			100,
-			100,
-		}, {50 , 50},
-		0,
-		WHITE);
-}
 
 
 //BACKGROUND
