@@ -12,16 +12,15 @@ Game::Game(State state) : background(600)
 	player = Player();
 	gameState = state;
 }
-void Game::End()
+void Game::End() noexcept
 {
-	//SAVE SCORE AND UPDATE SCOREBOARD
 	Projectiles.clear();
 	Walls.clear();
 	Aliens.clear();
 	newHighScore = CheckNewHighScore();
 	gameState = State::ENDSCREEN;
 }
-void Game::Reset()
+void Game::Reset() noexcept
 {
 	Projectiles.clear();
 	Walls.clear();
@@ -39,7 +38,7 @@ void Game::Reset()
 	SpawnAliens();
 }
 
-void Game::Update()
+void Game::Update() noexcept
 {
 	switch (gameState)
 	{
@@ -85,8 +84,6 @@ void Game::Update()
 		{
 			wall.Update();
 		}
-
-		//CHECK ALL COLLISONS HERE
 		for (Projectile& projectile : Projectiles)
 		{
 			if (projectile.GetType() == EntityType::PLAYER_PROJECTILE)
@@ -119,7 +116,6 @@ void Game::Update()
 			}
 		}
 
-
 		if (IsKeyPressed(KEY_SPACE))
 		{
 			Projectile newProjectile({ player.GetXPosition(),static_cast<float>(GetScreenHeight()) - ProjectileDistance }, EntityType::PLAYER_PROJECTILE);
@@ -135,7 +131,7 @@ void Game::Update()
 			{
 				randomAlienIndex = rand() % Aliens.size();
 			}
-			Alien& alien = Aliens[randomAlienIndex];
+			const Alien& alien = Aliens[randomAlienIndex];
 			Projectile newProjectile(alien.GetPosition(), EntityType::ENEMY_PROJECTILE);
 			newProjectile.OffsetEnemyProjectile();
 			newProjectile.InverseSpeed();
@@ -161,7 +157,6 @@ void Game::Update()
 
 		if (newHighScore)
 		{
-
 			if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
 			else mouseOnText = false;
 
@@ -228,11 +223,11 @@ void Game::Update()
 		break;
 	}
 }
-void Game::SpawnEnemyProjectile() {
+void Game::SpawnEnemyProjectile() noexcept {
 	if (Aliens.empty()) return; // Early return for empty Aliens vector
 
 
-	int randomAlienIndex = (Aliens.size() > 1) ? rand() % Aliens.size() : 0;
+	int const randomAlienIndex = (Aliens.size() > 1) ? rand() % Aliens.size() : 0;
 
 	// Create and configure the projectile
 	Projectile newProjectile(Aliens[randomAlienIndex].GetPosition(), EntityType::ENEMY_PROJECTILE);
@@ -247,50 +242,50 @@ void Game::UpdateEnemyShooting(int& shootTimer) {
 		shootTimer = 0;
 	}
 }
-bool const Game::IsCollidingWith(const Projectile& projectile, const Entity& entity)  {
+bool const Game::IsCollidingWith(const Projectile& projectile, const Entity& entity) noexcept {
 	return CheckCollision(entity.GetPosition(), entity.GetRadius(), projectile.GetLineStart(), projectile.GetLineEnd());
 }
 
-void Game::RenderNewHighScoreScreen() {
-	const int textX = 600;
-	DrawCenteredText("NEW HIGHSCORE!", textX, 300, 60, YELLOW);
-	DrawCenteredText("PLACE MOUSE OVER INPUT BOX!", textX, 400, 20, YELLOW);
+void Game::RenderNewHighScoreScreen() noexcept {
+	constexpr int textX = 600;
+	DrawText("NEW HIGHSCORE!", textX, 300, 60, YELLOW);
+	DrawText("PLACE MOUSE OVER INPUT BOX!", textX, 400, 20, YELLOW);
 
 	DrawRectangleRec(textBox, LIGHTGRAY);
 	DrawText(name, static_cast<int>(textBox.x) + 5, static_cast<int>(textBox.y) + 8, 40, MAROON);
-	DrawCenteredText(TextFormat("INPUT CHARS: %i/%i", letterCount, 8), textX, 600, 20, YELLOW);
+	DrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, 8), textX, 600, 20, YELLOW);
 
 	RenderTextBoxOutline();
 	RenderBlinkingCursor();
 
 	if (letterCount > 0 && letterCount < 9) {
-		DrawCenteredText("PRESS ENTER TO CONTINUE", textX, 800, 40, YELLOW);
+		DrawText("PRESS ENTER TO CONTINUE", textX, 800, 40, YELLOW);
 	}
 }
 
-void Game::RenderTextBoxOutline() {
-	auto outlineColor = mouseOnText ? RED : DARKGRAY;
+void Game::RenderTextBoxOutline() noexcept {
+	const auto outlineColor = mouseOnText ? RED : DARKGRAY;
 	DrawRectangleLines(static_cast<int>(textBox.x), static_cast<int>(textBox.y),
 		static_cast<int>(textBox.width), static_cast<int>(textBox.height), outlineColor);
 }
 
-void Game::RenderBlinkingCursor() {
+void Game::RenderBlinkingCursor() noexcept {
 	if (!mouseOnText || letterCount >= 9) {
 		if (letterCount >= 9) {
-			DrawCenteredText("Press BACKSPACE to delete chars...", 600, 650, 20, YELLOW);
+			DrawText("Press BACKSPACE to delete chars...", 600, 650, 20, YELLOW);
 		}
 		return;
 	}
 
 	if ((framesCounter / 20) % 2 == 0) {
-		int cursorX = static_cast<int>(textBox.x) + 8 + MeasureText(name, 40);
-		int cursorY = static_cast<int>(textBox.y) + 12;
+		const int cursorX = static_cast<int>(textBox.x) + 8 + MeasureText(name, 40);
+		const int cursorY = static_cast<int>(textBox.y) + 12;
 		DrawText("_", cursorX, cursorY, 40, MAROON);
 	}
 }
 
-void Game::RenderLeaderboardScreen() {
-	DrawCenteredText("PRESS ENTER TO CONTINUE", 600, 200, 40, YELLOW);
+void Game::RenderLeaderboardScreen() noexcept{
+	DrawText("PRESS ENTER TO CONTINUE", 600, 200, 40, YELLOW);
 	DrawText("LEADERBOARD", 50, 100, 40, YELLOW);
 
 	int yOffset = 140;
@@ -305,15 +300,10 @@ void Game::RenderLeaderboardScreen() {
 	}
 }
 
-// Utility function to centralize text rendering
-void Game::DrawCenteredText(std::string_view text, int x, int y, int fontSize, Color color) {
-	int textWidth = MeasureText(text.data(), fontSize);
-	DrawText(text.data(), x - textWidth / 2, y, fontSize, color);
-}
 
 
 void Game::Render()
-{
+noexcept{
 	switch (gameState)
 	{
 	case State::STARTSCREEN:
@@ -354,7 +344,7 @@ void Game::Render()
 		break;
 	}
 }
-void Game::SpawnAliens()
+void Game::SpawnAliens() noexcept
 {
 	for (int row = 0; row < formationHeight; row++) {
 		for (int col = 0; col < formationWidth; col++) {
@@ -365,7 +355,7 @@ void Game::SpawnAliens()
 
 }
 
-bool Game::CheckNewHighScore()
+bool Game::CheckNewHighScore() noexcept
 {
 	if (score > Leaderboard[4].score)
 	{
@@ -375,7 +365,7 @@ bool Game::CheckNewHighScore()
 	return false;
 }
 
-void Game::InsertNewHighScore(std::string name)
+void Game::InsertNewHighScore(std::string name) noexcept
 {
 	PlayerData newData;
 	newData.name = name;
@@ -395,7 +385,3 @@ void Game::InsertNewHighScore(std::string name)
 		}
 	}
 }
-
-
-
-

@@ -8,7 +8,7 @@ class Background
 	std::vector<Star> Stars;
 public:
 	Background(int starAmount);
-	void Update(float offset);
+	void Update(float offset) noexcept;
 	void Render() const noexcept;
 
 };

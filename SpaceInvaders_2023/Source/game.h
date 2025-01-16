@@ -52,21 +52,20 @@ public:
 	Background background;
 
 	Game(State state);
-	void End();
-	void RenderNewHighScoreScreen();
-	void RenderTextBoxOutline();
-	void RenderBlinkingCursor();
-	void RenderLeaderboardScreen();
-	void DrawCenteredText(std::string_view text, int x, int y, int fontSize, Color color);
-	void Reset();
-	void Update();
-	void SpawnEnemyProjectile();
+	void End()noexcept;
+	void RenderNewHighScoreScreen()noexcept;
+	void RenderTextBoxOutline() noexcept;
+	void RenderBlinkingCursor() noexcept;
+	void RenderLeaderboardScreen()noexcept;
+	void Reset()noexcept;
+	void Update()noexcept;
+	void SpawnEnemyProjectile()noexcept;
 	void UpdateEnemyShooting(int& shootTimer);
-	void Render();
-	void SpawnAliens();
-	bool CheckNewHighScore();
-	void InsertNewHighScore(std::string name);
-	bool const IsCollidingWith(const Projectile& projectile, const Entity& entity);
+	void Render()noexcept;
+	void SpawnAliens()noexcept;
+	bool CheckNewHighScore()noexcept;
+	void InsertNewHighScore(std::string name)noexcept;
+	bool const IsCollidingWith(const Projectile& projectile, const Entity& entity)noexcept;
 
 
 };

@@ -15,7 +15,7 @@ Background::Background(int starAmount)
 	}
 }
 
-void Background::Update(float offset)
+void Background::Update(float offset) noexcept
 {
 	for (Star& star : Stars)
 	{
@@ -25,7 +25,7 @@ void Background::Update(float offset)
 
 void Background::Render() const noexcept
 {
-	for (Star star : Stars)
+	for (const Star& star : Stars)
 	{
 		star.Render();
 	}
