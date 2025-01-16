@@ -59,13 +59,33 @@ public:
 	void RenderLeaderboardScreen()noexcept;
 	void Reset()noexcept;
 	void Update()noexcept;
-	void SpawnEnemyProjectile()noexcept;
-	void UpdateEnemyShooting(int& shootTimer);
+	void ShowStartScreen() noexcept;
 	void Render()noexcept;
 	void SpawnAliens()noexcept;
 	bool CheckNewHighScore()noexcept;
 	void InsertNewHighScore(std::string name)noexcept;
 	bool const IsCollidingWith(const Projectile& projectile, const Entity& entity)noexcept;
 
+	void HandleGameplay() noexcept;
+	void HandlePlayerInput() noexcept;
+	void UpdateEntities() noexcept;
+	void UpdatePlayer() noexcept;
+	void UpdateAliens() noexcept;
+	void UpdateProjectiles() noexcept;
+	void UpdateWalls() noexcept;
+	void HandleCollisions() noexcept;
+	void HandlePlayerProjectileCollisions(Projectile& projectile) noexcept;
+	void HandleEnemyProjectileCollisions(Projectile& projectile) noexcept;
+	void HandleProjectileWallCollisions(Projectile& projectile) noexcept;
+	void SpawnNewAliensIfNecessary() noexcept;
+	void UpdateBackground() noexcept;
+	void HandleShooting() noexcept;
+	void SpawnEnemyProjectile() noexcept;
+	void SpawnPlayerProjectile() noexcept;
+	void CleanupInactiveEntities() noexcept;
+	void ShowEndScreen() noexcept;
+	void HandleEndScreen() noexcept;
+	void HandleHighScoreEntry() noexcept;
+	void HandleNameInput() noexcept;
 
 };
