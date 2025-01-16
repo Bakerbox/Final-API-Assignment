@@ -1,7 +1,7 @@
 #include "Player.h"
 #include <algorithm>
 
-void Player::Update() {
+void Player::Update() noexcept {
     int direction = 0;
     if (IsKeyDown(KEY_LEFT)) direction -= 1;
     if (IsKeyDown(KEY_RIGHT)) direction += 1;
