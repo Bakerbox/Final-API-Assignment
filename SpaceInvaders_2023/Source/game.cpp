@@ -4,7 +4,7 @@
 constexpr float WallDistance = 250.0f;
 constexpr float AlienDistance = 450.0f;
 constexpr float ProjectileDistance = 130.0f;
-
+constexpr float SHOOT_INTERVAL = 60.0f;
 
 Game::Game(State state) : background(600)
 {
@@ -135,8 +135,8 @@ void Game::Update()
 			{
 				randomAlienIndex = rand() % Aliens.size();
 			}
-
-			Projectile newProjectile(Aliens[randomAlienIndex].GetPosition(), EntityType::ENEMY_PROJECTILE);
+			Alien& alien = Aliens[randomAlienIndex];
+			Projectile newProjectile(alien.GetPosition(), EntityType::ENEMY_PROJECTILE);
 			newProjectile.OffsetEnemyProjectile();
 			newProjectile.InverseSpeed();
 			Projectiles.push_back(newProjectile);
@@ -228,10 +228,89 @@ void Game::Update()
 		break;
 	}
 }
+void Game::SpawnEnemyProjectile() {
+	if (Aliens.empty()) return; // Early return for empty Aliens vector
 
+
+	int randomAlienIndex = (Aliens.size() > 1) ? rand() % Aliens.size() : 0;
+
+	// Create and configure the projectile
+	Projectile newProjectile(Aliens[randomAlienIndex].GetPosition(), EntityType::ENEMY_PROJECTILE);
+	newProjectile.OffsetEnemyProjectile();
+	newProjectile.InverseSpeed();
+
+	Projectiles.push_back(std::move(newProjectile));
+}
+void Game::UpdateEnemyShooting(int& shootTimer) {
+	if (++shootTimer >= SHOOT_INTERVAL) {
+		SpawnEnemyProjectile();
+		shootTimer = 0;
+	}
+}
 bool const Game::IsCollidingWith(const Projectile& projectile, const Entity& entity)  {
 	return CheckCollision(entity.GetPosition(), entity.GetRadius(), projectile.GetLineStart(), projectile.GetLineEnd());
 }
+
+void Game::RenderNewHighScoreScreen() {
+	const int textX = 600;
+	DrawCenteredText("NEW HIGHSCORE!", textX, 300, 60, YELLOW);
+	DrawCenteredText("PLACE MOUSE OVER INPUT BOX!", textX, 400, 20, YELLOW);
+
+	DrawRectangleRec(textBox, LIGHTGRAY);
+	DrawText(name, static_cast<int>(textBox.x) + 5, static_cast<int>(textBox.y) + 8, 40, MAROON);
+	DrawCenteredText(TextFormat("INPUT CHARS: %i/%i", letterCount, 8), textX, 600, 20, YELLOW);
+
+	RenderTextBoxOutline();
+	RenderBlinkingCursor();
+
+	if (letterCount > 0 && letterCount < 9) {
+		DrawCenteredText("PRESS ENTER TO CONTINUE", textX, 800, 40, YELLOW);
+	}
+}
+
+void Game::RenderTextBoxOutline() {
+	auto outlineColor = mouseOnText ? RED : DARKGRAY;
+	DrawRectangleLines(static_cast<int>(textBox.x), static_cast<int>(textBox.y),
+		static_cast<int>(textBox.width), static_cast<int>(textBox.height), outlineColor);
+}
+
+void Game::RenderBlinkingCursor() {
+	if (!mouseOnText || letterCount >= 9) {
+		if (letterCount >= 9) {
+			DrawCenteredText("Press BACKSPACE to delete chars...", 600, 650, 20, YELLOW);
+		}
+		return;
+	}
+
+	if ((framesCounter / 20) % 2 == 0) {
+		int cursorX = static_cast<int>(textBox.x) + 8 + MeasureText(name, 40);
+		int cursorY = static_cast<int>(textBox.y) + 12;
+		DrawText("_", cursorX, cursorY, 40, MAROON);
+	}
+}
+
+void Game::RenderLeaderboardScreen() {
+	DrawCenteredText("PRESS ENTER TO CONTINUE", 600, 200, 40, YELLOW);
+	DrawText("LEADERBOARD", 50, 100, 40, YELLOW);
+
+	int yOffset = 140;
+	const int nameX = 50;
+	const int scoreX = 350;
+	const int rowHeight = 40;
+
+	for (const auto& entry : Leaderboard) {
+		DrawText(entry.name.c_str(), nameX, yOffset, 40, YELLOW);
+		DrawText(TextFormat("%i", entry.score), scoreX, yOffset, 40, YELLOW);
+		yOffset += rowHeight;
+	}
+}
+
+// Utility function to centralize text rendering
+void Game::DrawCenteredText(std::string_view text, int x, int y, int fontSize, Color color) {
+	int textWidth = MeasureText(text.data(), fontSize);
+	DrawText(text.data(), x - textWidth / 2, y, fontSize, color);
+}
+
 
 void Game::Render()
 {
@@ -243,15 +322,12 @@ void Game::Render()
 		DrawText("PRESS SPACE TO BEGIN", 200, 350, 40, YELLOW);
 		break;
 	case State::GAMEPLAY:
-		//Code
-		//background render LEAVE THIS AT TOP
 		background.Render();
-
 		DrawText(TextFormat("Score: %i", score), 50, 20, 40, YELLOW);
 		DrawText(TextFormat("Lives: %i", player.GetLives()), 50, 70, 40, YELLOW);
- 
-		player.Render(resources.shipTextures[player.GetTextureFrame()]->get()); 
-		for (Projectile projectile: Projectiles)
+
+		player.Render(resources);
+		for (Projectile projectile : Projectiles)
 		{
 			projectile.Render(resources.laserTexture->get());
 		}
@@ -266,72 +342,18 @@ void Game::Render()
 
 		break;
 	case State::ENDSCREEN:
-		if (newHighScore)
-		{
-			DrawText("NEW HIGHSCORE!", 600, 300, 60, YELLOW);
-			DrawText("PLACE MOUSE OVER INPUT BOX!", 600, 400, 20, YELLOW);
-			DrawRectangleRec(textBox, LIGHTGRAY);
-			if (mouseOnText)
-			{
-				DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
-			}
-			else
-			{
-				DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
-			}
-
-			//Draw the name being typed out
-			DrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, MAROON);
-
-			//Draw the text explaining how many characters are used
-			DrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, 8), 600, 600, 20, YELLOW);
-
-			if (mouseOnText)
-			{
-				if (letterCount < 9)
-				{
-					// Draw blinking underscore char
-					if (((framesCounter / 20) % 2) == 0)
-					{
-						DrawText("_", (int)textBox.x + 8 + MeasureText(name, 40), (int)textBox.y + 12, 40, MAROON);
-					}
-
-				}
-				else
-				{
-					//Name needs to be shorter
-					DrawText("Press BACKSPACE to delete chars...", 600, 650, 20, YELLOW);
-				}
-				
-			}
-
-			// Explain how to continue when name is input
-			if (letterCount > 0 && letterCount < 9)
-			{
-				DrawText("PRESS ENTER TO CONTINUE", 600, 800, 40, YELLOW);
-			}
-
+		if (newHighScore) {
+			RenderNewHighScoreScreen();
 		}
 		else {
-			// If no highscore or name is entered, show scoreboard and call it a day
-			DrawText("PRESS ENTER TO CONTINUE", 600, 200, 40, YELLOW);
-
-			DrawText("LEADERBOARD", 50, 100, 40, YELLOW);
-
-			for (int i = 0; i < Leaderboard.size(); i++)
-			{
-				char* tempNameDisplay = Leaderboard[i].name.data();
-				DrawText(tempNameDisplay, 50, 140 + (i * 40), 40, YELLOW);
-				DrawText(TextFormat("%i", Leaderboard[i].score), 350, 140 + (i * 40), 40, YELLOW);
-			}
+			RenderLeaderboardScreen();
 		}
 		break;
+
 	default:
-		//SHOULD NOT HAPPEN
 		break;
 	}
 }
-
 void Game::SpawnAliens()
 {
 	for (int row = 0; row < formationHeight; row++) {
@@ -373,7 +395,6 @@ void Game::InsertNewHighScore(std::string name)
 		}
 	}
 }
-
 
 
 

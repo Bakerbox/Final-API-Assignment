@@ -53,8 +53,15 @@ public:
 
 	Game(State state);
 	void End();
+	void RenderNewHighScoreScreen();
+	void RenderTextBoxOutline();
+	void RenderBlinkingCursor();
+	void RenderLeaderboardScreen();
+	void DrawCenteredText(std::string_view text, int x, int y, int fontSize, Color color);
 	void Reset();
 	void Update();
+	void SpawnEnemyProjectile();
+	void UpdateEnemyShooting(int& shootTimer);
 	void Render();
 	void SpawnAliens();
 	bool CheckNewHighScore();

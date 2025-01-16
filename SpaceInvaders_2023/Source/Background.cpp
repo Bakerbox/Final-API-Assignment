@@ -17,16 +17,16 @@ Background::Background(int starAmount)
 
 void Background::Update(float offset)
 {
-	for (int i = 0; i < Stars.size(); i++)
+	for (Star& star : Stars)
 	{
-		Stars[i].Update(offset);
+		star.Update(offset);
 	}
 }
 
 void Background::Render() const noexcept
 {
-	for (int i = 0; i < Stars.size(); i++)
+	for (Star star : Stars)
 	{
-		Stars[i].Render();
+		star.Render();
 	}
 }

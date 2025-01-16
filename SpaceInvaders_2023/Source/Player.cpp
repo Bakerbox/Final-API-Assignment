@@ -16,12 +16,16 @@ void Player::Update() {
     }
 }
 
-void Player::Render(Texture2D texture) const noexcept {
+void Player::Render(Resources& resource) const noexcept {
     const float height = static_cast<float>(GetScreenHeight());
-    DrawTexturePro(texture,
+    DrawTexturePro(GetTexture(resource),
         { textureFrame * 352.0f, 0, 352, 352 },       // Source rectangle
         { position.x, height - 50, 50, 50 }, // Destination rectangle
         { 25, 25 },                                    // Origin
         0.0f,                                        // Rotation
         WHITE);
+}
+
+void Player::Render(Texture2D texture) const noexcept {
+    
 }

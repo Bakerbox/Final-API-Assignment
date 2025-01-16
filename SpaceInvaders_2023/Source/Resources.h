@@ -11,7 +11,7 @@ public:
     std::unique_ptr<TextureResource> barrierTexture;
     std::unique_ptr<TextureResource> laserTexture;
     std::vector<std::unique_ptr<TextureResource>> shipTextures;
-
+    Texture2D GetPlayerTextureAtIndex(int index)  noexcept { return shipTextures.at(4)->get(); }
     Resources() noexcept;
     ~Resources() noexcept;
 };
