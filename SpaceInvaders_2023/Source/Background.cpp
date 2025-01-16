@@ -9,7 +9,7 @@ Background::Background(int starAmount)
 			static_cast<float>(GetRandomValue(0, GetScreenHeight())
 			)});
 		newStar.SetColor(SKYBLUE);
-		newStar.SetSize(GetRandomValue(1, 4) / 2);
+		newStar.SetSize(static_cast<float>(GetRandomValue(1, 4) / 2));
 		Stars.push_back(newStar);
 
 	}

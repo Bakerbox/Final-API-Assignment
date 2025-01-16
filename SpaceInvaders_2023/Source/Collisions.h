@@ -13,10 +13,10 @@ bool inline const CheckCollision(Vector2 circlePos, float circleRadius, Vector2 
 	Vector2 const C = circlePos;
 
 	float const length = lineLength(A, B);
-	float const dotP = (((C.x - A.x) * (B.x - A.x)) + ((C.y - A.y) * (B.y - A.y))) / pow(length, 2);
+	float const dotP = (((C.x - A.x) * (B.x - A.x)) + ((C.y - A.y) * (B.y - A.y))) / static_cast<float>(pow(length, 2));
 	float const closestX = A.x + (dotP * (B.x - A.x));
 	float const closestY = A.y + (dotP * (B.y - A.y));
-	float constexpr buffer = 0.1;
+	float constexpr buffer = 0.1f;
 
 	float const closeToStart = lineLength(A, { closestX, closestY });
 	float const closeToEnd = lineLength(B, { closestX, closestY });	

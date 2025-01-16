@@ -1,6 +1,5 @@
 #include "game.h"
 #include <vector>
-#include <chrono>
 
 constexpr float WallDistance = 250.0f;
 constexpr float AlienDistance = 450.0f;
@@ -295,7 +294,7 @@ void Game::SpawnEnemyProjectile() noexcept
 
     int const randomAlienIndex = (Aliens.size() > 1) ? rand() % Aliens.size() : 0;
 
-    Projectile newProjectile(Aliens[randomAlienIndex].GetPosition(), EntityType::ENEMY_PROJECTILE);
+    Projectile newProjectile(Aliens.at(randomAlienIndex).GetPosition(), EntityType::ENEMY_PROJECTILE);
     newProjectile.OffsetEnemyProjectile();
     newProjectile.InverseSpeed();
 
@@ -421,8 +420,8 @@ void Game::SpawnAliens() noexcept
     {
         for (int col = 0; col < formationWidth; ++col)
         {
-            const float xPos = formationX + col * alienSpacing;
-            const float yPos = formationY + row * alienSpacing;
+            const float xPos = static_cast<float>(formationX + col * alienSpacing);
+            const float yPos = static_cast<float>(formationY + row * alienSpacing);
             Aliens.push_back(Alien({ xPos, yPos }));
         }
     }
@@ -431,7 +430,7 @@ void Game::SpawnAliens() noexcept
 
 bool Game::CheckNewHighScore() noexcept
 {
-	if (score > Leaderboard[4].score)
+	if (score > Leaderboard.at(4).score)
 	{
 		return true;
 	}
@@ -439,22 +438,22 @@ bool Game::CheckNewHighScore() noexcept
 	return false;
 }
 
-void Game::InsertNewHighScore(std::string name) noexcept
+void Game::InsertNewHighScore(std::string newName) noexcept
 {
 	PlayerData newData;
-	newData.name = name;
+	newData.name = newName;
 	newData.score = score;
 
 	for (int i = 0; i < Leaderboard.size(); i++)
 	{
-		if (newData.score > Leaderboard[i].score)
+		if (newData.score > Leaderboard.at(i).score)
 		{
 
 			Leaderboard.insert(Leaderboard.begin() + i, newData);
 
 			Leaderboard.pop_back();
 
-			i = Leaderboard.size();
+			i = static_cast<int>(Leaderboard.size());
 
 		}
 	}

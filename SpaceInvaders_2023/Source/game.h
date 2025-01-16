@@ -38,7 +38,7 @@ class Game
 public:
 	bool mouseOnText;
 	Vector2 cornerPos;
-	float offset;
+	float offset;  
 
 
 	Resources resources;
