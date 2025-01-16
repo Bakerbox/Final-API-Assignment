@@ -30,7 +30,7 @@ public:
         return *this;
     }
 
-    Texture get() const noexcept {
-        return texture;
+    Texture2D* get() noexcept {
+        return &texture;
     }
 };

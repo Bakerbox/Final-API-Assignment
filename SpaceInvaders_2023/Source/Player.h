@@ -18,13 +18,15 @@ public:
         position.y = static_cast<float>(GetScreenHeight()) - 50.0f;
     }
 
-     Texture2D GetTexture(Resources& resource) const noexcept { return resource.shipTextures.at(textureFrame)->get(); }
+     Texture2D GetTexture(Resources& resource) const noexcept { return *resource.shipTextures.at(textureFrame)->get(); }
      float GetPlayerBaseHeight() noexcept { return player_base_height; }
     int GetTextureFrame() noexcept { return textureFrame; }
-    void Update() override;
+    int GetLives() const noexcept { return lives; }
+
+
+    void Update() noexcept override;
     void Render(Resources& resource) const noexcept;
     void Render(Texture2D texture) const noexcept;
-    int GetLives() const noexcept { return lives; }
     void DecreaseLife() noexcept { if (lives > 0) lives--; }
 
 };

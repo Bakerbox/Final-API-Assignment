@@ -35,6 +35,7 @@ class Game
 	char name[9 + 1] = "\0";  
 	int letterCount = 0;
 	int framesCounter = 0;
+
 public:
 	bool mouseOnText;
 	Vector2 cornerPos;
@@ -69,10 +70,6 @@ public:
 	void HandleGameplay() noexcept;
 	void HandlePlayerInput() noexcept;
 	void UpdateEntities() noexcept;
-	void UpdatePlayer() noexcept;
-	void UpdateAliens() noexcept;
-	void UpdateProjectiles() noexcept;
-	void UpdateWalls() noexcept;
 	void HandleCollisions() noexcept;
 	void HandlePlayerProjectileCollisions(Projectile& projectile) noexcept;
 	void HandleEnemyProjectileCollisions(Projectile& projectile) noexcept;
@@ -84,7 +81,6 @@ public:
 	void SpawnPlayerProjectile() noexcept;
 	void CleanupInactiveEntities() noexcept;
 	void ShowEndScreen() noexcept;
-	void HandleEndScreen() noexcept;
 	void HandleHighScoreEntry() noexcept;
 	void HandleNameInput() noexcept;
 

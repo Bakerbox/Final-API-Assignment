@@ -14,7 +14,7 @@ public:
         position = pos; radius = 30.0f;
     }
 
-    bool GetActive() noexcept { return active; }
+    bool GetActive() const noexcept  { return active; }
     void SetActive(bool set) noexcept { active = set; }
     void Update() override;
     void Render(Texture2D texture) const override;

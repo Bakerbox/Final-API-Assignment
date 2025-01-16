@@ -386,15 +386,15 @@ void Game::Render() noexcept
         player.Render(resources);
         for (Projectile& projectile : Projectiles)
         {
-            projectile.Render(resources.laserTexture->get());
+            projectile.Render(*resources.laserTexture->get());
         }
         for (Wall& wall : Walls)
         {
-            wall.Render(resources.barrierTexture->get());
+            wall.Render(*resources.barrierTexture->get());
         }
         for (Alien& alien : Aliens)
         {
-            alien.Render(resources.alienTexture->get());
+            alien.Render(*resources.alienTexture->get());
         }
         break;
 
@@ -427,7 +427,6 @@ void Game::SpawnAliens() noexcept
     }
 }
 
-
 bool Game::CheckNewHighScore() noexcept
 {
 	if (score > Leaderboard.at(4).score)
@@ -454,7 +453,6 @@ void Game::InsertNewHighScore(std::string newName) noexcept
 			Leaderboard.pop_back();
 
 			i = static_cast<int>(Leaderboard.size());
-
 		}
 	}
 }
